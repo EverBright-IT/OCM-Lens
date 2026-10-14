@@ -6,7 +6,10 @@
 # gitlab.com tag pipeline has already published it to the package registry,
 # it is attached as an asset; otherwise the release still appears and the
 # notes carry the links (best effort on purpose, so tag order between the
-# repos never blocks the release).
+# repos never blocks the release). Tags map as in .gitlab-ci.yml: v0.x is
+# the 1.x lockstep line, later versions stand for the monorepo's
+# ocm-lens-vX.Y.Z. A version Open VSX marks as pre-release becomes a GitHub
+# pre-release, so the stable release stays "Latest".
 name: Release
 
 on:
@@ -24,19 +27,36 @@ jobs:
 
       - name: Assemble release notes
         run: |
+          case "$GITHUB_REF_NAME" in
+            v0.*) mono="$GITHUB_REF_NAME"; changelog="CHANGELOG.md"
+                  origin="released in lockstep with SBOM Lens from the" ;;
+            *)    mono="ocm-lens-$GITHUB_REF_NAME"; changelog="apps/ocm-lens/CHANGELOG.md"
+                  origin="released on its own version line (tag \`$mono\`) from the" ;;
+          esac
+          channel=""; pre=""
+          meta=$(curl -fsSL "https://open-vsx.org/api/everbright-it/ocmlens/${GITHUB_REF_NAME#v}" 2>/dev/null || true)
+          case "$meta" in
+            *'"preRelease":true'*)
+              channel="This version is on the VS Code pre-release channel: open OCM Lens in the Extensions view and choose \"Switch to Pre-Release Version\"."
+              pre="--prerelease" ;;
+          esac
+          echo "MONO_TAG=$mono" >> "$GITHUB_ENV"
+          echo "PRERELEASE_FLAG=$pre" >> "$GITHUB_ENV"
           cat > release-notes.md <<EOF
-          OCM Lens $GITHUB_REF_NAME, released in lockstep with SBOM Lens from the
+          OCM Lens $GITHUB_REF_NAME, $origin
           [sbom-lens monorepo](https://gitlab.com/everbrightit-group/sbom-lens).
-          Full notes for this version are in the shared
-          [CHANGELOG](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/CHANGELOG.md).
+          Full notes for this version are in the
+          [CHANGELOG](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/$changelog).
+          $channel
 
           - Web app: <https://ocm-lens.everbright-it.de/app/>
-          - VS Code extension: <https://open-vsx.org/extension/everbright-it/ocmlens>
+          - VS Code extension: <https://open-vsx.org/extension/everbright-it/ocmlens>,
+            <https://marketplace.visualstudio.com/items?itemName=everbright-it.ocmlens>
           EOF
 
       - name: Fetch ocmlens.vsix (best effort)
         run: |
-          url="https://gitlab.com/api/v4/projects/everbrightit-group%2Fsbom-lens/packages/generic/ocmlens/$GITHUB_REF_NAME/ocmlens.vsix"
+          url="https://gitlab.com/api/v4/projects/everbrightit-group%2Fsbom-lens/packages/generic/ocmlens/$MONO_TAG/ocmlens.vsix"
           curl -fsSL "$url" -o ocmlens.vsix || echo "vsix not published yet on gitlab.com; releasing without the asset"
 
       - name: Create GitHub release
@@ -47,6 +67,7 @@ jobs:
           [ -f ocmlens.vsix ] && assets="ocmlens.vsix"
           gh release create "$GITHUB_REF_NAME" \
             --verify-tag \
+            $PRERELEASE_FLAG \
             --title "OCM Lens $GITHUB_REF_NAME" \
             --notes-file release-notes.md \
             $assets

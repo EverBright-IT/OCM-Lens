@@ -2,10 +2,14 @@
 # pushed tag into a GitLab release, so the product home shows versions and
 # activity without duplicating the monorepo's CI.
 #
-# Flow: after a monorepo release (tag vX.Y.Z there), push the same tag here:
-#   git tag v0.16.0 && git push origin v0.16.0
-# The release notes link to the shared CHANGELOG; the vsix asset points at
-# the package built by the monorepo's own gitlab.com tag pipeline.
+# Flow: after a monorepo release, push the matching tag here. 1.x (the 0.x
+# versions) released in lockstep with SBOM Lens and used the monorepo tag
+# itself (v0.29.6). 2.x has its own version line, so vX.Y.Z here stands for
+# the monorepo's ocm-lens-vX.Y.Z:
+#   git tag v2.0.0 && git push origin v2.0.0
+# The release notes link to the matching CHANGELOG and say so when Open VSX
+# marks the version as a pre-release; the vsix asset points at the package
+# built by the monorepo's own gitlab.com tag pipeline.
 workflow:
   rules:
     - if: $CI_COMMIT_TAG
@@ -18,23 +22,36 @@ release:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - |
+      case "$CI_COMMIT_TAG" in
+        v0.*) mono="$CI_COMMIT_TAG"; changelog="CHANGELOG.md"
+              origin="released in lockstep with SBOM Lens from the" ;;
+        *)    mono="ocm-lens-$CI_COMMIT_TAG"; changelog="apps/ocm-lens/CHANGELOG.md"
+              origin="released on its own version line (tag \`$mono\`) from the" ;;
+      esac
+      channel=""
+      meta=$(wget -qO- "https://open-vsx.org/api/everbright-it/ocmlens/${CI_COMMIT_TAG#v}" 2>/dev/null || true)
+      case "$meta" in
+        *'"preRelease":true'*) channel="This version is on the VS Code pre-release channel: open OCM Lens in the Extensions view and choose \"Switch to Pre-Release Version\"." ;;
+      esac
       cat > release-notes.md <<EOF
-      OCM Lens $CI_COMMIT_TAG, released in lockstep with SBOM Lens from the
+      OCM Lens $CI_COMMIT_TAG, $origin
       [sbom-lens monorepo](https://gitlab.com/everbrightit-group/sbom-lens).
-      Full notes for this version are in the shared
-      [CHANGELOG](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/CHANGELOG.md).
+      Full notes for this version are in the
+      [CHANGELOG](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/$changelog).
+      $channel
 
       - Web app: <https://ocm-lens.everbright-it.de/app/>
-      - VS Code extension: <https://open-vsx.org/extension/everbright-it/ocmlens>
+      - VS Code extension: <https://open-vsx.org/extension/everbright-it/ocmlens>,
+        <https://marketplace.visualstudio.com/items?itemName=everbright-it.ocmlens>
       EOF
     - |
-      url="https://gitlab.com/api/v4/projects/everbrightit-group%2Fsbom-lens/packages/generic/ocmlens/$CI_COMMIT_TAG/ocmlens.vsix"
+      url="https://gitlab.com/api/v4/projects/everbrightit-group%2Fsbom-lens/packages/generic/ocmlens/$mono/ocmlens.vsix"
       if wget -q --spider "$url" 2>/dev/null; then
         release-cli create --tag-name "$CI_COMMIT_TAG" --name "OCM Lens $CI_COMMIT_TAG" \
           --description "$(cat release-notes.md)" \
           --assets-link "{\"name\":\"ocmlens.vsix\",\"url\":\"$url\",\"link_type\":\"package\"}"
       else
-        echo "vsix not published on gitlab.com for $CI_COMMIT_TAG; creating the release without the asset link"
+        echo "vsix not published on gitlab.com for $mono; creating the release without the asset link"
         release-cli create --tag-name "$CI_COMMIT_TAG" --name "OCM Lens $CI_COMMIT_TAG" \
           --description "$(cat release-notes.md)"
       fi

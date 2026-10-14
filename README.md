@@ -15,7 +15,10 @@ your machine.
 **Try it:** <https://ocm-lens.everbright-it.de/app/> (a demo delivery is one
 click away). The landing page lives at <https://ocm-lens.everbright-it.de/>.
 The VS Code extension is on
-[Open VSX](https://open-vsx.org/extension/everbright-it/ocmlens).
+[Open VSX](https://open-vsx.org/extension/everbright-it/ocmlens) and the
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=everbright-it.ocmlens).
+**OCM Lens 2.0 is out as a pre-release** in VS Code; see
+[below](#ocm-lens-20-pre-release).
 
 ![OCM Lens: the Explore view with a demo delivery loaded, showing a Helm chart resource with OCM identity, localBlob access, a verified digest, and the artifact content preview](docs/hero-explore.png)
 
@@ -71,26 +74,37 @@ The VS Code extension is on
 ## Get it
 
 - **Web app:** <https://ocm-lens.everbright-it.de/app/>. Nothing to install.
-- **VS Code / VSCodium:** install
-  [`everbright-it.ocmlens`](https://open-vsx.org/extension/everbright-it/ocmlens)
-  from Open VSX. It opens `component-descriptor.yaml` files and `.ctf` /
-  component-archive tars, scans the workspace for deliveries, and pulls
-  component versions straight from OCI registries.
+- **VS Code / VSCodium:** install `everbright-it.ocmlens` from
+  [Open VSX](https://open-vsx.org/extension/everbright-it/ocmlens) or the
+  [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=everbright-it.ocmlens).
+  It opens `component-descriptor.yaml` files and `.ctf` / component-archive
+  tars, scans the workspace for deliveries, and pulls component versions
+  straight from OCI registries.
 
-## OCM Lens 2.0 (beta, in development)
+## OCM Lens 2.0 (pre-release)
 
-OCM Lens is being rebuilt as an OCM-native delivery explorer. Instead of
-mapping a delivery onto an SBOM document viewer, 2.0 shows it in the spec's
-own terms: a dashboard that answers what is in the bundle and whether it can
-be deployed without network access, the component reference graph as
+OCM Lens is rebuilt as an OCM-native delivery explorer. Instead of mapping a
+delivery onto an SBOM document viewer, 2.0 shows it in the spec's own terms:
+a dashboard that answers what is in the bundle and whether it can be
+deployed without network access, the component reference graph as
 navigation, every artifact of the delivery in one table, and a Verify view
 with digest and signature checks plus an exportable delivery acceptance
 report.
 
+**2.0.0 is on the pre-release channel of the VS Code extension.** Open OCM
+Lens in the Extensions view and choose *Switch to Pre-Release Version*. The
+release channel and the hosted web app stay on 1.x (the feature list above)
+until 2.x goes stable. 2.0 deliberately leaves some 1.x features out for now
+(Inventory, Conflicts, Licenses, Map, and Diff views, the VEX/CSAF overlay,
+compliance profiles, comparing two registry versions); the
+[changelog](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/apps/ocm-lens/CHANGELOG.md)
+lists every change. Note for Open VSX users: Open VSX lists 2.0.0 as its
+newest version, and editors that ignore the pre-release flag may install it
+directly.
+
 2.0 lives in the monorepo under
 [`apps/ocm-lens`](https://gitlab.com/everbrightit-group/sbom-lens/-/tree/main/apps/ocm-lens)
-and versions independently on its own 2.x line. It is not released yet: the
-hosted app and the VS Code extension above are OCM Lens 1.x. Design notes:
+and versions independently on its own 2.x line. Design notes:
 [docs/ocm-lens-2.md](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/docs/ocm-lens-2.md).
 
 ## Where the code lives
@@ -98,15 +112,20 @@ hosted app and the VS Code extension above are OCM Lens 1.x. Design notes:
 OCM Lens is developed in the
 [sbom-lens monorepo](https://gitlab.com/everbrightit-group/sbom-lens)
 together with its sibling product
-[SBOM Lens](https://sbom-lens.everbright-it.de/), an SPDX viewer. The two
-share the viewer engine, the web UI, and the VS Code shell (about 91 percent
-of the code), so they release in lockstep from one codebase, while a CI gate
-keeps each product's bundle free of the other product's code.
+[SBOM Lens](https://sbom-lens.everbright-it.de/), an SPDX viewer. OCM Lens
+1.x shares the viewer engine, the web UI, and the VS Code shell with SBOM
+Lens and released in lockstep with it (0.x versions). OCM Lens 2.x keeps the
+shared core (delivery walker, digests, signature verification) and the VS
+Code shell but has its own UI and its own version line, tagged
+`ocm-lens-vX.Y.Z`. A CI gate keeps each product's bundle free of the other
+product's code.
 
 This repository is the product home for OCM Lens. **Code, issues, and merge
 requests live in the monorepo:**
 <https://gitlab.com/everbrightit-group/sbom-lens> (use the `ocm-lens` label
-for issues). Releases are tagged there; the shared changelog is
+for issues). Releases are tagged there. Changelogs: 2.x in
+[apps/ocm-lens/CHANGELOG.md](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/apps/ocm-lens/CHANGELOG.md),
+1.x in the shared
 [CHANGELOG.md](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/CHANGELOG.md).
 
 ## Scope and limits
