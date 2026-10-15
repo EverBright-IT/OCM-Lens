@@ -93,12 +93,20 @@ report. It reads deliveries the way the ocm CLI writes them, including
 air-gap transfers that store images and charts by value, and calls a
 delivery incomplete when a stored image lost a layer on the way.
 
+Since 2.1 it also checks the SBOMs a delivery carries: which SBOM describes
+which image or binary (by digest, by reference, or by component, each
+named for what actually matched), which software ships without one, and
+how complete each SBOM is (NTIA minimum elements, BSI TR-03183 as an
+approximation). The acceptance report carries the same evidence. A demo
+delivery shows every case.
+
 **OCM Lens 2.x is on the pre-release channel of the VS Code extension.** Open OCM
 Lens in the Extensions view and choose *Switch to Pre-Release Version*. The
 release channel and the hosted web app stay on 1.x (the feature list above)
-until 2.x goes stable. 2.0 deliberately leaves some 1.x features out for now
-(Inventory, Conflicts, Licenses, Map, and Diff views, the VEX/CSAF overlay,
-compliance profiles, comparing two registry versions); the
+until 2.x goes stable. 2.x still leaves some 1.x features out (Inventory,
+Conflicts, Licenses, Map, and Diff views, the VEX/CSAF overlay, custom
+compliance profiles, comparing two registry versions); the package views of
+a delivery come next, then the delivery diff. The
 [changelog](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/apps/ocm-lens/CHANGELOG.md)
 lists every change. Note for Open VSX users: Open VSX lists the newest 2.x
 pre-release as its newest version, and editors that ignore the pre-release
