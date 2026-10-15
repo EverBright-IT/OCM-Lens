@@ -91,16 +91,16 @@ navigation, every artifact of the delivery in one table, and a Verify view
 with digest and signature checks plus an exportable delivery acceptance
 report.
 
-**2.0.0 is on the pre-release channel of the VS Code extension.** Open OCM
+**OCM Lens 2.x is on the pre-release channel of the VS Code extension.** Open OCM
 Lens in the Extensions view and choose *Switch to Pre-Release Version*. The
 release channel and the hosted web app stay on 1.x (the feature list above)
 until 2.x goes stable. 2.0 deliberately leaves some 1.x features out for now
 (Inventory, Conflicts, Licenses, Map, and Diff views, the VEX/CSAF overlay,
 compliance profiles, comparing two registry versions); the
 [changelog](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/apps/ocm-lens/CHANGELOG.md)
-lists every change. Note for Open VSX users: Open VSX lists 2.0.0 as its
-newest version, and editors that ignore the pre-release flag may install it
-directly.
+lists every change. Note for Open VSX users: Open VSX lists the newest 2.x
+pre-release as its newest version, and editors that ignore the pre-release
+flag may install it directly.
 
 2.0 lives in the monorepo under
 [`apps/ocm-lens`](https://gitlab.com/everbrightit-group/sbom-lens/-/tree/main/apps/ocm-lens)
