@@ -89,7 +89,9 @@ a dashboard that answers what is in the bundle and whether it can be
 deployed without network access, the component reference graph as
 navigation, every artifact of the delivery in one table, and a Verify view
 with digest and signature checks plus an exportable delivery acceptance
-report.
+report. It reads deliveries the way the ocm CLI writes them, including
+air-gap transfers that store images and charts by value, and calls a
+delivery incomplete when a stored image lost a layer on the way.
 
 **OCM Lens 2.x is on the pre-release channel of the VS Code extension.** Open OCM
 Lens in the Extensions view and choose *Switch to Pre-Release Version*. The
