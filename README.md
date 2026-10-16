@@ -106,13 +106,21 @@ or CPE, and the answer also names what could not be searched (an image
 without an SBOM, say). License identifiers are counted, versions that
 differ between artifacts are listed, and the list exports as CSV or JSON.
 
+Since 2.3 it shows what the supplier states about known vulnerabilities in
+those packages: OpenVEX and CSAF 2.0 documents the delivery carries, or that
+you add, matched to the packages by purl, CPE and file hash. It reads them
+offline: a document the delivery only points to is named, never fetched,
+and a package without a statement is called that, never cleared. The
+acceptance report and the package exports carry the statements.
+
 **OCM Lens 2.x is on the pre-release channel of the VS Code extension.** Open OCM
 Lens in the Extensions view and choose *Switch to Pre-Release Version*. The
 release channel and the hosted web app stay on 1.x (the feature list above)
 until 2.x goes stable. The Packages view takes over from the 1.x Inventory,
-Conflicts and Licenses views; 2.x still leaves out the Map and Diff views,
-the VEX/CSAF overlay, custom compliance profiles, and comparing two
-registry versions. The delivery diff and the VEX/CSAF overlay come next. The
+Conflicts and Licenses views, and the Vulnerabilities tab brings back the
+VEX/CSAF overlay; 2.x still leaves out the Map and Diff views, custom
+compliance profiles, and comparing two registry versions. The delivery diff
+comes next. The
 [changelog](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/apps/ocm-lens/CHANGELOG.md)
 lists every change. Note for Open VSX users: Open VSX lists the newest 2.x
 pre-release as its newest version, and editors that ignore the pre-release
