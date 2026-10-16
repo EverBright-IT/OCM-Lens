@@ -100,13 +100,19 @@ how complete each SBOM is (NTIA minimum elements, BSI TR-03183 as an
 approximation). The acceptance report carries the same evidence. A demo
 delivery shows every case.
 
+Since 2.2 it lists the packages those SBOMs name, each with the image or
+binary it ships in. Ask whether a package is in the delivery by name, purl
+or CPE, and the answer also names what could not be searched (an image
+without an SBOM, say). License identifiers are counted, versions that
+differ between artifacts are listed, and the list exports as CSV or JSON.
+
 **OCM Lens 2.x is on the pre-release channel of the VS Code extension.** Open OCM
 Lens in the Extensions view and choose *Switch to Pre-Release Version*. The
 release channel and the hosted web app stay on 1.x (the feature list above)
-until 2.x goes stable. 2.x still leaves some 1.x features out (Inventory,
-Conflicts, Licenses, Map, and Diff views, the VEX/CSAF overlay, custom
-compliance profiles, comparing two registry versions); the package views of
-a delivery come next, then the delivery diff. The
+until 2.x goes stable. The Packages view takes over from the 1.x Inventory,
+Conflicts and Licenses views; 2.x still leaves out the Map and Diff views,
+the VEX/CSAF overlay, custom compliance profiles, and comparing two
+registry versions. The delivery diff and the VEX/CSAF overlay come next. The
 [changelog](https://gitlab.com/everbrightit-group/sbom-lens/-/blob/main/apps/ocm-lens/CHANGELOG.md)
 lists every change. Note for Open VSX users: Open VSX lists the newest 2.x
 pre-release as its newest version, and editors that ignore the pre-release
