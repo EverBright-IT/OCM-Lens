@@ -113,6 +113,13 @@ offline: a document the delivery only points to is named, never fetched,
 and a package without a statement is called that, never cleared. The
 acceptance report and the package exports carry the statements.
 
+2.3.1 to 2.3.3 are security releases. A valid signature also requires the
+component versions it references to match their recorded digests, a
+malformed key no longer hangs Verify, and a stored image, chart or artifact
+set matches only when every blob below its manifest matches, recognised by
+its bytes and also in deliveries larger than the in-memory budget. A digest
+mismatch shows on the dashboard.
+
 **OCM Lens 2.x is on the pre-release channel of the VS Code extension.** Open OCM
 Lens in the Extensions view and choose *Switch to Pre-Release Version*. The
 release channel and the hosted web app stay on 1.x (the feature list above)
